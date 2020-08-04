@@ -28,7 +28,7 @@ app.locals.knex = knex;
 // });
 
 router.get('/employees', routes.employees.listAllEmployee);
-router.get('/employees/:id', middlewares.getIDAsInteger, routes.employees.listOneEmployee);
+router.get('/employees/:id', middlewares.authenticate, middlewares.getIDAsInteger, routes.employees.listOneEmployee);
 router.post('/employees', jsonParser, routes.employees.createEmployee);
 router.patch('/employees/:id', jsonParser, middlewares.getIDAsInteger, routes.employees.updateEmployee);
 router.delete('/employees/:id', middlewares.getIDAsInteger, routes.employees.deleteEmployee);

@@ -24,6 +24,7 @@ function listAllEmployee(req, res){
 }
 
 function listOneEmployee(req, res){
+    console.log(req.decoded);
     const { knex } = req.app.locals;
     const { id } = req.params; 
     knex.select()

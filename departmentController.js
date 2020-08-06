@@ -3,7 +3,7 @@ const { response } = require("express");
 function listAllDepartment(req, res){
     const { knex }  = req.app.locals;
     knex.select()
-        .from('departments')
+        .from('department')
         .then(data => res.status(200).json(data))
         .catch(error => res.status(500).json(error));
 }
@@ -12,8 +12,8 @@ function listOneDepartment(req, res){
     const { knex }  = req.app.locals;
     const { id } = req.params;
     knex.select()
-        .from('departments')
-        .where({id: `$id`})
+        .from('department')
+        .where({id: `${id}`})
         .then(data => {
             if(data.length > 0){
                 return res.status(200).json(data[0]);
@@ -89,10 +89,34 @@ function deleteDepartment(req, res){
     .catch(error => res.status(500).json(error));
 }
 
+function getDepartmentEmployees(req, res){
+    const { knex } = req.app.locals;
+    let { id } = req.params;
+    id = +id;
+    knex.select('e.name', 'e.email')
+        .from('employee as e')
+        .innerJoin('department as d', function(){
+            this.on('e.department', '=', 'd.id')
+                .andOn('d.id', '=', id);
+        })
+        .where({department: `${id}`})
+        .then(data => {
+            if(data.length > 0){
+                return res.status(200).json(data);
+            }
+            else{
+                return res.status(404).json(`Department with ID ${id} not found.`);
+            }
+            
+        })
+        .catch(error => res.status(500).json(error));
+}
+
 module.exports = {
     listAllDepartment,
     listOneDepartment,
     createDepartment,
     updateDepartment,
-    deleteDepartment
+    deleteDepartment,
+    getDepartmentEmployees
 }

@@ -7,6 +7,16 @@ const routes = require('./routes');
 //const mysql = require('mysql');
 //const connection = mysql.createConnection(settings.database);
 const middlewares = require('./middlewares');
+const schema = require('./schema');
+const resolvers = require('./resolvers');
+
+const { ApolloServer } = require('apollo-server-express');
+const server = new  ApolloServer({
+    typeDefs: schema,
+    resolvers: resolvers
+});
+server.applyMiddleware({ app });
+
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const knex = require('knex')({
@@ -28,13 +38,15 @@ app.locals.knex = knex;
 // });
 
 router.get('/employees', routes.employees.listAllEmployee);
-router.get('/employees/:id', middlewares.authenticate, middlewares.getIDAsInteger, routes.employees.listOneEmployee);
+//router.get('/employees/:id', middlewares.authenticate, middlewares.getIDAsInteger, routes.employees.listOneEmployee);
+router.get('/employees/:id', middlewares.getIDAsInteger, routes.employees.listOneEmployee);
 router.post('/employees', jsonParser, routes.employees.createEmployee);
 router.patch('/employees/:id', jsonParser, middlewares.getIDAsInteger, routes.employees.updateEmployee);
 router.delete('/employees/:id', middlewares.getIDAsInteger, routes.employees.deleteEmployee);
 
 router.get('/department', routes.department.listAllDepartment);
 router.get('/department/:id', middlewares.getIDAsInteger, routes.department.listOneDepartment);
+router.get('/department/:id/employees', middlewares.getIDAsInteger, routes.department.getDepartmentEmployees);
 router.post('/department', jsonParser, routes.department.createDepartment);
 router.patch('/department/:id', jsonParser, middlewares.getIDAsInteger, routes.department.updateDepartment);
 router.delete('/department/:id', middlewares.getIDAsInteger, routes.department.deleteDepartment);

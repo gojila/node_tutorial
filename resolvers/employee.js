@@ -5,8 +5,13 @@ module.exports = {
         employees: async () => {
             return await fetch(`${base}/employees`).then(response => response.json());
         },
-        employee: async (parent, { id }) => {
-            return await fetch(`${base}/employees/${id}`).then(response => response.json());
+        employee: async (parent, { id }, context) => {
+            return await fetch(`${base}/employees/${id}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: context.authHeader
+                }
+            }).then(response => response.json());
         }
     },
     Employee: {

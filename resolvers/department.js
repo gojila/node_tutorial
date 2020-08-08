@@ -12,7 +12,6 @@ module.exports = {
     Department: {
         employees: async parent => {
             return await fetch(`${base}/department/${parent.id}/employees`).then(response => {
-                console.log(response.status);
                 if(response.status != 200){
                     return [];
                 }

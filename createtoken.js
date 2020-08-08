@@ -21,7 +21,8 @@ knex('users').where({
                 username: 'adam',
                 isAdmin: true
             };
-            const secret = 's3cr3t';
+            //const secret = 's3cr3t';
+            const secret = process.env.JWT_SECRET;
             const expiresIn = 3600;
             const token = jwt.sign(payload, secret, { expiresIn });
             console.log(token);

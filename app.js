@@ -12,6 +12,8 @@ const resolvers = require('./resolvers');
 const cors = require('cors');
 const cluster = require('cluster');
 const os = require('os');
+const path = require('path');
+const pages = require('./route/page.js');
 require('dotenv').config();
 
 if(cluster.isMaster){
@@ -75,6 +77,13 @@ else{
     //     }
     //     app.locals.connection = connection;
     // });
+
+    app.set('views', path.join(__dirname, 'views'));
+    app.set('view engine', 'ejs');
+    app.use(express.static(path.join(__dirname, 'public')));
+
+    app.use('/', pages);
+
     app.listen(settings.APIServerPort, () => console.info(`Server is listening on ${settings.APIServerPort}`));
 }
 
